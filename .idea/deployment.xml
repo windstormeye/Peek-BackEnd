@@ -5,7 +5,7 @@
       <paths name="api">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/ubuntu/peek" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/ubuntu/Peek-BackEnd" local="$PROJECT_DIR$" web="/" />
             <mapping local="" />
           </mappings>
         </serverdata>
