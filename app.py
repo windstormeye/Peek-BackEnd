@@ -11,6 +11,7 @@ engine = create_engine('mysql+mysqldb://root:woaiwoziji123@localhost:3306/peek?c
 Base = declarative_base()
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind = engine)
+session = Session()
 
 
 class User(Base):
@@ -25,7 +26,7 @@ class User(Base):
 
 app = Flask(__name__)
 
-# ç”¨æˆ·æ³¨å†Œ
+# ¿¿¿¿
 @app.route('/peek/v1/user/register', methods=['POST'])
 def login():
     if request.method == 'POST' and request.form.get('username') and request.form.get('passwd'):
@@ -43,11 +44,21 @@ def login():
         return jsonify(response)
 
 
-# ç”¨æˆ·ç™»å½•
+# ¿¿¿¿
 @app.route('/peek/v1/user/login', methods=['POST'])
 def register():
     if request.method == 'POST' and request.form.get('username') and request.form.get('userMD5'):
         session = Session()
+
+@app.route('/peek/v1/user/register')
+def login():
+    return '2333'
+
+# ÓÃ»§µÇÂ¼
+@app.route('/peek/v1/user/login', methods=['POST'])
+def register():
+    if request.method == 'POST' and request.form.get('username') and request.form.get('userMD5'):
+
         username = request.form.get('username')
         userMD5 = request.form.get('userMD5')
         user = session.query(User).filter_by(username=username).all()
