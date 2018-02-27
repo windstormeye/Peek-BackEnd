@@ -3,9 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, Column, String, Integer
 from sqlalchemy.orm import sessionmaker
 
-import hashlib
-
-import errors
+import errors, uploadImage, base
 
 engine = create_engine('mysql+mysqldb://root:woaiwoziji123@localhost:3306/peek?charset=utf8')
 Base = declarative_base()
@@ -26,7 +24,7 @@ class User(Base):
 
 app = Flask(__name__)
 
-# ¿¿¿¿
+# user register
 @app.route('/peek/v1/user/register', methods=['POST'])
 def login():
     if request.method == 'POST' and request.form.get('username') and request.form.get('passwd'):
@@ -43,28 +41,16 @@ def login():
         }
         return jsonify(response)
 
-
-# ¿¿¿¿
+# user login
 @app.route('/peek/v1/user/login', methods=['POST'])
 def register():
     if request.method == 'POST' and request.form.get('username') and request.form.get('userMD5'):
-        session = Session()
-
-@app.route('/peek/v1/user/register')
-def login():
-    return '2333'
-
-# ÓÃ»§µÇÂ¼
-@app.route('/peek/v1/user/login', methods=['POST'])
-def register():
-    if request.method == 'POST' and request.form.get('username') and request.form.get('userMD5'):
-
         username = request.form.get('username')
         userMD5 = request.form.get('userMD5')
         user = session.query(User).filter_by(username=username).all()
         salt = 'peek2018'
         md5string = username + user[0].passwd + salt
-        finalString = md5String(md5string)
+        finalString = base.md5String(md5string)
         if userMD5 == finalString:
             responder = {
                 'status' : 'success',
@@ -80,10 +66,19 @@ def register():
     else:
         return errors.errorOf400()
 
-def md5String(string):
-    md5 = hashlib.md5()
-    md5.update(string.encode("utf-8"))
-    return md5.hexdigest()
+# get uploadImage token
+@app.route('/peek/v1/uploadImageToken', methods=['GET'])
+def uploadimagetoken():
+    if request.args.get('username'):
+        username = request.args.get('username')
+        token = uploadImage.getUploadToken(username)
+        response = {
+            'username' : username,
+            'token' : token,
+        }
+        return jsonify(response)
+    else:
+        return errors.errorOf400()
 
 
 if __name__ == '__main__':
